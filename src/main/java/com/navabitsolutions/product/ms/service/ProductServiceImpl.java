@@ -23,12 +23,12 @@ public class ProductServiceImpl implements ProductService {
     public String createProduct(ProductRequest productRequest) {
 
         String productId = UUID.randomUUID().toString();
-        ProductCreatedEvent productCreatedEvent = ProductCreatedEvent.builder()
-                .withProductId(productId)
-                .withTitle(productRequest.getTitle())
-                .withPrice(productRequest.getPrice())
-                .withQuality(productRequest.getQuality())
-                .build();
+        ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent();
+        productCreatedEvent.setProductId(productId);
+        productCreatedEvent.setTitle(productRequest.getTitle());
+        productCreatedEvent.setPrice(productRequest.getPrice());
+        productCreatedEvent.setQuality(productRequest.getQuality());
+
         CompletableFuture<SendResult<String, ProductCreatedEvent>> future =
                 kafkaTemplate.send("product-created-events-topic", productId, productCreatedEvent);
         future.whenComplete((result, exception) -> {
