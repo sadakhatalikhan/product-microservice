@@ -22,7 +22,12 @@ public class ProductController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createProduct(@RequestBody ProductRequest productRequest) {
-        String productId = productService.createProduct(productRequest);
+        String productId = null;
+        try {
+            productId  = productService.createProduct(productRequest);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(productId);
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(productId);
     }
 }

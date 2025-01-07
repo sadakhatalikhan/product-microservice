@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -20,7 +21,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String createProduct(ProductRequest productRequest) {
+    public String createProduct(ProductRequest productRequest) throws ExecutionException, InterruptedException {
 
         String productId = UUID.randomUUID().toString();
         ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent();
@@ -29,15 +30,13 @@ public class ProductServiceImpl implements ProductService {
         productCreatedEvent.setPrice(productRequest.getPrice());
         productCreatedEvent.setQuality(productRequest.getQuality());
 
-        CompletableFuture<SendResult<String, ProductCreatedEvent>> future =
-                kafkaTemplate.send("product-created-events-topic", productId, productCreatedEvent);
-        future.whenComplete((result, exception) -> {
-            if (exception != null) {
-                LOGGER.error("****** Failed to send messages {}", exception.getMessage());
-            } else {
-                LOGGER.info("******* Message sent successfully {}", result.getRecordMetadata());
-            }
-        });
+        SendResult<String, ProductCreatedEvent> result =
+                kafkaTemplate.send("insync-topic-example", productId, productCreatedEvent).get();
+
+        LOGGER.info("****** Offset from the topic {} ", result.getRecordMetadata().offset());
+        LOGGER.info("****** Partition from the topic {} ", result.getRecordMetadata().partition());
+        LOGGER.info("****** Topic from the topic {} ", result.getRecordMetadata().topic());
+
         LOGGER.info("****** Returning the productId");
         return productId;
     }
