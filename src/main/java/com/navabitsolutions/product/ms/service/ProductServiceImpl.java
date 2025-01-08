@@ -30,6 +30,9 @@ public class ProductServiceImpl implements ProductService {
         productCreatedEvent.setPrice(productRequest.getPrice());
         productCreatedEvent.setQuality(productRequest.getQuality());
 
+        /*CompletableFuture<SendResult<String, ProductCreatedEvent>> future =
+                kafkaTemplate.send("product-created-events-topic", productId, productCreatedEvent);*/
+
         SendResult<String, ProductCreatedEvent> result =
                 kafkaTemplate.send("insync-topic-example", productId, productCreatedEvent).get();
 
