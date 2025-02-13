@@ -1,6 +1,6 @@
 package com.navabitsolutions.product.ms.service;
 
-import com.navabitsolutions.product.ms.events.ProductCreatedEvent;
+import com.kafka.ws.core.ProductCreatedEvent;
 import com.navabitsolutions.product.ms.request.ProductRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +9,6 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Service
