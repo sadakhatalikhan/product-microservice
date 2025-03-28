@@ -69,6 +69,16 @@ public class KafkaConfig {
         return new KafkaTemplate<String, ProductCreatedEvent>(producerFactory());
     }
 
+    /*
+    @Bean
+    NewTopic createTopic() {
+        return TopicBuilder.name("product-created-events-topic")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+    */
+
     @Bean
     NewTopic createTopic() {
         return TopicBuilder.name("product-created-events-topic")
